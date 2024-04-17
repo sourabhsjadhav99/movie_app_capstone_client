@@ -1,0 +1,22 @@
+@import "../../mixins.scss";
+
+.header {
+    transform: translateY(0);
+       
+    transition: all ease 0.5s;
+
+    &.top {
+        background: rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(3.5px);
+        -webkit-backdrop-filter: blur(3.5px);
+    }
+    &.show {
+        background-color: var(--black3);
+    }
+    &.hide {
+        transform: translateY(-60px);
+    }
+    .searchBar {
+        animation: mobileMenu 0.3s ease forwards;
+    }
+}

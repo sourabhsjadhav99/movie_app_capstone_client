@@ -76,8 +76,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} /> */}
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<MainLayout />}>
           {/* <Route path="/" element={isAuthenticated ?<MainLayout />: <Navigate to="/signin" replace />}> */}
           <Route index element={<Home />} />

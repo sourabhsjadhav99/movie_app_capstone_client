@@ -2,15 +2,14 @@ import React from "react";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import "./style.scss";
 import Img from "../lazyLoadImage/Img";
 import Genres from "../genres/Genres";
 import PosterFallback from "../../assets/no-poster.png";
 import { FaRegStarHalfStroke } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa";
-import axios from "axios";
 import { axiosInstance } from "../../helper/axiosInstancs";
+
 const MovieCard = ({ data, fromSearch, mediaType, bookmarked, fetchData }) => {
   const { url } = useSelector((state) => state.home);
   const navigate = useNavigate();
@@ -18,8 +17,6 @@ const MovieCard = ({ data, fromSearch, mediaType, bookmarked, fetchData }) => {
     ? url.poster + data.poster_path
     : PosterFallback;
 
-
-    
   let handleDeleteBookmark = async (event) => {
     event.stopPropagation();
     try {

@@ -20,7 +20,7 @@ const MovieCard = ({ data, fromSearch, mediaType, bookmarked, fetchData }) => {
   let handleDeleteBookmark = async (event) => {
     event.stopPropagation();
     try {
-      await axiosInstance.delete(`http://localhost:8000/media/delete/${data._id}`);
+      await axiosInstance.delete(`/media/delete/${data._id}`);
       await fetchData()
     } catch (error) {
       console.error("Error:", error);

@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { axiosInstance } from "../../helper/axiosInstancs";
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
@@ -22,8 +23,8 @@ function Signup() {
   let navigate = useNavigate();
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      let response = await axios.post(
-        "http://localhost:8000/user/register",
+      let response = await  axiosInstance.post(
+        "/user/register",
         values
       );
     //   resetForm();

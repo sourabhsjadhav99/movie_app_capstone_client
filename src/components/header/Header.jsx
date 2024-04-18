@@ -15,7 +15,6 @@ import "./style.scss";
 import ContentWrapper from "../contentWrapper/ContentWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess } from "../../store/authSlice";
-import { useRef } from "react";
 
 const Header = () => {
   const [show, setShow] = useState("top");

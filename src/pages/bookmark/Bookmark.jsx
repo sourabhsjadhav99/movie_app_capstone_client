@@ -10,6 +10,7 @@ import "./style.scss";
 import Spinner from "../../components/spinner/Spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { TbH1 } from "react-icons/tb";
+import { axiosInstance } from "../../helper/axiosInstancs";
 const Bookmark = () => {
   const [movieData, setMovieData] = useState([]);
   const [tvData, setTvData] = useState([]);
@@ -19,8 +20,8 @@ const Bookmark = () => {
   let navigate = useNavigate();
 
   const fetchData = () => {
-    axios
-      .get(`http://localhost:8000/user/getuser/${userData?.useremail}`)
+    axiosInstance
+      .get(`/user/getuser/${userData?.useremail}`)
       .then((response) => {
         setTvData(response.data.tv);
         setMovieData(response.data.movie);

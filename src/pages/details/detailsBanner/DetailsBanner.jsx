@@ -63,7 +63,7 @@ const DetailsBanner = ({ video, crew, cast }) => {
       status,
     } = data;
     try {
-      let response = await axiosInstance.post("http://localhost:8000/media/addmedia/", {
+      let response = await axiosInstance.post("/media/addmedia/", {
         adult,
         backdrop_path,
         genre_ids: genres.map((genre) => genre.id),

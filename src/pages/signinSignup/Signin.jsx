@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { axiosInstance } from "../../helper/axiosInstancs";
 
 function Signin() {
   const dispatch = useDispatch();
@@ -21,12 +22,12 @@ function Signin() {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/user/login",
+      const response = await axiosInstance.post(
+        "/user/login",
         values
       );
       const { token, data, message } = response.data; // Assuming your backend returns a JWT token
-      dispatch(signInSuccess({ token, data })); // You'll need to define this action in your Redux setup
+      dispatch(signInSuccess({ token, data }));  // You'll need to define this action in your Redux setup
 
       toast.success(message, { autoClose: 1000 }); 
       setTimeout(() => {

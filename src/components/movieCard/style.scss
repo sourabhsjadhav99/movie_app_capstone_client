@@ -1,14 +1,14 @@
 @import "../../mixins.scss";
 .movieCard {
-    width: calc(50% - 5px);
+    width: calc(50% - 15px);
     margin-bottom: 25px;
     cursor: pointer;
     flex-shrink: 0;
     @include md {
-        width: calc(25% - 15px);
+        width: calc(25% - 35px);
     }
     @include lg {
-        width: calc(20% - 16px);
+        width: calc(20% - 40px);
     }
     .posterBlock {
         position: relative;
@@ -69,6 +69,9 @@
     &:hover {
         .posterBlock {
             opacity: 0.5;
+        }
+        .bookmark-button{
+            display: flex;
         }
     }
 }

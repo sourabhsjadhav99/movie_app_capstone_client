@@ -1,7 +1,7 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdMovieCreation } from "react-icons/md";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { signInSuccess } from "../../store/authSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -14,6 +14,14 @@ import { axiosInstance } from "../../helper/axiosInstancs";
 function Signin() {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Use useNavigate hook
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      navigate(-1); // Redirect to the previous page
+    }
+  }, []);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),

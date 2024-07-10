@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { VscChromeClose } from "react-icons/vsc";
 import { useNavigate, useLocation, NavLink, Link } from "react-router-dom";
@@ -15,6 +15,7 @@ import "./style.scss";
 import ContentWrapper from "../contentWrapper/ContentWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess } from "../../store/authSlice";
+import useClickOutside from "../../hooks/useClickOutside";
 
 const Header = () => {
   const [show, setShow] = useState("top");
@@ -27,8 +28,9 @@ const Header = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
-
-
+  const userRef = useRef(null);
+  // Handle click outside user menu to close it
+  useClickOutside(userRef, () => setShowUser(false));
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
@@ -136,7 +138,7 @@ const Header = () => {
       )}
 
       {showUser && (
-        <div className=" text-white p-2 flex flex-col gap-2 justify-start   items-center w-[300px] h-[130px] absolute top-[60px] right-[0] bg-[#161d2f] rounded-lg">
+        <div ref={userRef} className=" text-white p-2 flex flex-col gap-2 justify-start   items-center w-[300px] h-[130px] absolute top-[60px] right-[0] bg-[#161d2f] rounded-lg">
           <button onClick={() => setShowUser(false)} className="relative left-[100px] text-xl"><TiDelete/></button>
           <div className="text-3xl">
             <FaRegUserCircle />

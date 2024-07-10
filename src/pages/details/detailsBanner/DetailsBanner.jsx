@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import "./style.scss";
-
+import { BsBookmarkPlus, BsBookmarkCheck } from "react-icons/bs";
 import ContentWrapper from "../../../components/contentWrapper/ContentWrapper";
 import useFetch from "../../../hooks/useFetch";
 import Genres from "../../../components/genres/Genres";
@@ -12,14 +12,15 @@ import CircleRating from "../../../components/Rating/Rating.jsx";
 import Img from "../../../components/lazyLoadImage/Img.jsx";
 import PosterFallback from "../../../assets/no-poster.png";
 import VideoPopup from "../../../components/videoPopup/VideoPopup";
-import { MdBookmarkBorder } from "react-icons/md";
+import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
 import { axiosInstance } from "../../../helper/axiosInstancs.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const DetailsBanner = ({ video, crew, cast }) => {
   const [show, setShow] = useState(false);
   const [videoId, setVideoId] = useState(null);
-
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const { mediaType, id } = useParams();
 
   const { data, loading } = useFetch(`/${mediaType}/${id}`);
@@ -35,6 +36,23 @@ const DetailsBanner = ({ video, crew, cast }) => {
     (f) => f.job === "Screenplay" || f.job === "Story" || f.job === "Writer"
   );
 
+  useEffect(() => {
+    const checkBookmarkStatus = async () => {
+      try {
+        if (isAuthenticated) {
+          const response = await axiosInstance.get(`/media/check/${id}`, {
+            params: { email: userData?.useremail },
+          });
+          setIsBookmarked(response.data.bookmarked);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkBookmarkStatus();
+  }, [id, isAuthenticated, userData]);
+
   const toHoursAndMinutes = (totalMinutes) => {
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
@@ -42,63 +60,26 @@ const DetailsBanner = ({ video, crew, cast }) => {
   };
 
   let handleBookmark = async () => {
-   if(isAuthenticated){
-    let {
-      backdrop_path,
-      adult,
-      id,
-      original_language,
-      original_title,
-      genres,
-      runtime,
-      overview,
-      poster_path,
-      title,
-      name,
-      popularity,
-      release_date,
-      vote_average,
-      vote_count,
-      tagline,
-      status,
-    } = data;
-    try {
-      let response = await axiosInstance.post("/media/addmedia/", {
-        adult,
-        backdrop_path,
-        genre_ids: genres.map((genre) => genre.id),
-        id,
-        original_language,
-        original_title,
-        overview,
-        popularity,
-        poster_path,
-        release_date,
-        title: title || data.name,
-        vote_average,
-        vote_count,
-        status,
-        runtime,
-        tagline,
-        mediaType: mediaType,
-        director: director?.map((director) => director.name),
-        writer: writer?.map((writer) => writer.name),
-        cast: cast?.map((cast) => cast.name),
-        email: userData?.useremail,
-      });
-
-      toast.info(response.data.message, { autoClose: 2000 });
-    } catch (error) {
-      console.log(error);
+    if (isAuthenticated) {
+      let { id } = data;
+      try {
+        let response = await axiosInstance.post("/media/toggleBookmark/", {
+          id,
+          mediaType: mediaType,
+          email: userData?.useremail,
+        });
+        setIsBookmarked(response.data.bookmarked);
+        toast.info(response.data.message, { autoClose: 500 });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      toast.error(`Login to bookmark`);
     }
-   }else{
-    toast.error(`Login to bookmark`)
-   }
   };
 
   return (
     <div className="detailsBanner">
-
       {!loading ? (
         <>
           {!!data && (
@@ -143,12 +124,22 @@ const DetailsBanner = ({ video, crew, cast }) => {
                         </div>
                         <span className="text">Watch Trailer</span>
                       </button>
-                      <button
-                        className="text-3xl border-2 rounded-full p-1"
-                        onClick={handleBookmark}
-                      >
-                        <MdBookmarkBorder />
-                      </button>
+
+                      {isBookmarked ? (
+                        <button
+                          onClick={handleBookmark}
+                          className={` rounded-full p-1 text-3xl border-2 text-white bg-green-400  hover:bg-red-500`}
+                        >
+                          <BsBookmarkCheck />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleBookmark}
+                          className={` rounded-full p-1 text-3xl border-2 text-white hover:bg-orange-400 `}
+                        >
+                          <BsBookmarkPlus />
+                        </button>
+                      )}
                     </div>
 
                     <div className="overview">

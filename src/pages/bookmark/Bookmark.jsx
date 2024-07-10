@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-
 import ContentWrapper from "../../components/contentWrapper/ContentWrapper";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import MovieCard from "../../components/movieCard/MovieCard";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -9,8 +7,9 @@ import { IoArrowBackSharp } from "react-icons/io5";
 import "./style.scss";
 import Spinner from "../../components/spinner/Spinner";
 import { Link, useNavigate } from "react-router-dom";
-import { TbH1 } from "react-icons/tb";
+
 import { axiosInstance } from "../../helper/axiosInstancs";
+import useFetch from "../../hooks/useFetch";
 const Bookmark = () => {
   const [movieData, setMovieData] = useState([]);
   const [tvData, setTvData] = useState([]);
@@ -19,6 +18,7 @@ const Bookmark = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   let navigate = useNavigate();
 
+  console.log(movieData);
   const fetchData = () => {
     axiosInstance
       .get(`/user/getuser/${userData?.useremail}`)
@@ -30,12 +30,13 @@ const Bookmark = () => {
         console.error("Error fetching data:", error);
       });
   };
+
   useEffect(() => {
     setLoading(true);
     isAuthenticated && fetchData(); // Call fetchData function by adding parentheses ()
     setLoading(false);
-  }, []);
-
+  }, [isAuthenticated]);
+  console.log(tvData, movieData);
   return (
     <div className="explorePage px-2">
       <ContentWrapper>
@@ -56,18 +57,14 @@ const Bookmark = () => {
                     dataLength={movieData?.length || []}
                     loader={<Spinner />}
                   >
-                    {movieData?.map((item, index) => {
-                      if (item.media_type === "person") return;
-                      return (
-                        <MovieCard
-                          key={index}
-                          data={item}
-                          mediaType={item.mediaType}
-                          bookmarked="true"
-                          fetchData={fetchData}
-                        />
-                      );
-                    })}
+                    {movieData?.map((item, index) => (
+                      <MovieCardWithFetch
+                        key={index}
+                        mediaType={item?.mediaType}
+                        id={item?.id}
+                        fetchData={fetchData}
+                      />
+                    ))}
                   </InfiniteScroll>
                 ) : (
                   <span className="resultNotFound">No Bookmarked Movies</span>
@@ -89,11 +86,10 @@ const Bookmark = () => {
                     {tvData?.map((item, index) => {
                       if (item.media_type === "person") return;
                       return (
-                        <MovieCard
+                        <MovieCardWithFetch
                           key={index}
-                          data={item}
-                          mediaType={item.mediaType}
-                          bookmarked="true"
+                          mediaType={item?.mediaType}
+                          id={item?.id}
                           fetchData={fetchData}
                         />
                       );
@@ -109,7 +105,9 @@ const Bookmark = () => {
       ) : (
         <ContentWrapper>
           <div className=" text-white">
-            <h1 className="text-3xl mb-3">Login to bookmark Movies abd Tv shows</h1>
+            <h1 className="text-3xl mb-3">
+              Login to bookmark Movies abd Tv shows
+            </h1>
             <Link to={"/signin"} className="underline">
               Click here to login{" "}
             </Link>
@@ -117,6 +115,19 @@ const Bookmark = () => {
         </ContentWrapper>
       )}
     </div>
+  );
+};
+
+const MovieCardWithFetch = ({ mediaType, id, fetchData }) => {
+  const { data } = useFetch(`/${mediaType}/${id}`);
+  console.log(data);
+  return (
+    <MovieCard
+      data={data}
+      mediaType={mediaType}
+      bookmarked="true"
+      fetchData={fetchData}
+    />
   );
 };
 

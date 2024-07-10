@@ -52,11 +52,11 @@ const Explore = () => {
   }, [mediaType]);
 
   return (
-    <div className="explorePage px-2">
+    <div className="explorePage  px-1 mx-auto" >
       <ContentWrapper>
-        <div className="text-2xl w-[30px]  h-[30px] flex justify-center items-center font-bold p-1 mb-2 text-white cursor-pointer border rounded-full hover:bg-white hover:text-[#5a698f] transition duration-300 ease-in-out">
-          <IoArrowBackSharp onClick={() => navigate(-1)} />
-        </div>
+        <button onClick={() => navigate(-1)} className="text-2xl w-[30px]  h-[30px] flex justify-center items-center font-bold p-1 mb-2 text-white cursor-pointer border rounded-full hover:bg-white hover:text-[#5a698f] transition duration-300 ease-in-out">
+          <IoArrowBackSharp  />
+        </button>
         <div className="pageHeader">
           <div className="pageTitle">
             {mediaType === "tv" ? "Explore TV Shows" : "Explore Movies"}
